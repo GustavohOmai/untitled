@@ -55,23 +55,52 @@ public class Menu {
 	}
 	
 	private void excluirEmpregado() {
-		// TODO Auto-generated method stub
-		
+		EmpregadoDAO dao = new EmpregadoDAO();
+		int id = parseInt(showInputDialog("ID"));
+		Empregado empregado = dao.pesquisar(id);
+		if (empregado==null){
+			showMessageDialog(null, "Empregado não encontrado");
+		}else{
+			dao.remover(id);
+		}
 	}
 
 	private void atualizarEmpregado() {
-		// TODO Auto-generated method stub
+		EmpregadoDAO dao = new EmpregadoDAO();
+		int id = parseInt(showInputDialog("ID"));
+		Empregado empregado = dao.pesquisar(id);
+		if (empregado==null){
+			showMessageDialog(null, "Empregado não encontrado");
+		}else{
+			String nome = showInputDialog(null, "Nome");
+			double salario = parseDouble(showInputDialog("Salário"));
+			empregado.setId(id);
+			empregado.setNome(nome);
+			empregado.setSalario(salario);
+			dao.atualizar(empregado);
+		}
 		
 	}
 
 	private void listarEmpregado() {
-		// TODO Auto-generated method stub
-		
+		EmpregadoDAO dao = new EmpregadoDAO();
+		List<Empregado> lista = dao.listar();
+		String aux = "";
+		for (Empregado e : lista){
+			aux += e + "\n";
+		}
+		showMessageDialog(null, aux);
 	}
 
 	private void pesquisarEmpregado() {
-		// TODO Auto-generated method stub
-		
+		EmpregadoDAO dao = new EmpregadoDAO();
+		int id = parseInt(showInputDialog("ID"));
+		Empregado empregado = dao.pesquisar(id);
+		if (empregado==null){
+			showMessageDialog(null, "Empregado não encontrado");
+		}else{
+			showMessageDialog(null, empregado);
+		}
 	}
 
 	private void cadastrarEmpregado() {
@@ -82,7 +111,7 @@ public class Menu {
 		double salario;
 		
 		id = parseInt(showInputDialog("ID"));
-		if(daoEmp.pesquisar(id)) {
+		if(daoEmp.pesquisar(id) != null) {
 			showMessageDialog(null, "Empregado já está cadastrado");
 		} else {
 			nome = showInputDialog("Nome");

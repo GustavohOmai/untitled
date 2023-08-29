@@ -23,16 +23,22 @@ public class EmpregadoDAO {
 	}
 
 	// método para pesquisar um empregado pelo ID
-	public boolean pesquisar(int id) {
-		boolean status = false;
-		sql = "select * from java_empregado where id = ?";
+	public Empregado pesquisar(int id) {
+		Empregado empregado = null;
+		sql = "select e.nome, e.salario, d.nome as departamento from java_empregado e\r\n" +
+				"join java_departamento d\r\n" +
+				"on e.id_departamento = d.id where e.id = ?";
 		
 		try(Connection connection = conexao.conectar()) {
 			ps = connection.prepareStatement(sql);
 			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			if(rs.next()) {
-				status = true;
+				String nome =  rs.getString("nome");
+				double salario = rs.getDouble("salario");
+				String nomeDep = rs.getString("departamento");
+				Departamento departamento = new Departamento(0, nomeDep);
+				empregado = new Empregado(id, nome, salario, departamento);
 			}
 			rs.close();
 			ps.close();
@@ -40,7 +46,7 @@ public class EmpregadoDAO {
 		} catch (SQLException e) {
 			System.out.println("erro ao pesquisar empregado\n" + e);
 		}		
-		return status;
+		return empregado;
 	}
 
 	// método para inserir um empregado na base de dados
@@ -78,7 +84,7 @@ public class EmpregadoDAO {
 
 	public List<Empregado> listar() {
 		List<Empregado> lista = new ArrayList<>();
-		sql = "select e.nome, e.salario, d.nome as departmanento from java_empregado e\r\n" +
+		sql = "select e.nome, e.salario, d.nome as departamento from java_empregado e\r\n" +
 				"	join java_departamento d\r\n" +
 				"	on e.id_departamento = d.id";
 
@@ -106,6 +112,9 @@ public class EmpregadoDAO {
 		sql= "update java_empregado set nome= ?, salario= ?, where id= ?";
 		try(Connection connection = conexao.conectar()) {
 			ps = connection.prepareStatement(sql);
+			ps.setString(1, empregado.getNome());
+			ps.setDouble(2, empregado.getSalario());
+			ps.setInt(3, empregado.getId());
 			ps.execute();
 			ps.close();
 			connection.close();

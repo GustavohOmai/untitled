@@ -44,5 +44,15 @@ public class Empregado {
 
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return "Empregado{" +
+				"id=" + id +
+				", nome='" + nome + '\'' +
+				", salario=" + salario +
+				", departamento=" + departamento.getId() +
+				'}';
+	}
 }
